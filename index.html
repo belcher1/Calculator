@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" 
+        rel="stylesheet" 
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" 
+        crossorigin="anonymous">
+
+    <title>Calculator</title>
+
+    <script>
+        let inputArray = ["Clear", "/", "*", "-", "+", "=", "Enter", ".",
+             "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+        let mathArray = ["/", "*", "-", "+"];
+
+        function write(button) {
+            if(button == "Clear") {
+                document.getElementById("display").innerText = 0;
+            }
+            else if(button == "=" || button == "Enter") {
+                // calculate(document.getElementById("display").innerText);
+            }
+            else if(document.getElementById("display").innerText == "0") {
+                document.getElementById("display").innerText = button;
+            }
+            else if(button == ".") {
+                if(!document.getElementById("display").innerText.includes(".")) {
+                    document.getElementById("display").innerText += ".";
+                } 
+            }
+            else {
+                document.getElementById("display").innerText += button;
+            }
+
+            if(button == "Clear") {
+                document.getElementById("input").innerText = 0;
+            }
+            else if(button == "=" || button == "Enter") {
+                document.getElementById("input").innerText += document.getElementById("display").innerText;
+                calculate(document.getElementById("input").innerText);
+                document.getElementById("input").innerText += "=";
+            }
+            else if(document.getElementById("input").innerText == "0" && mathArray.includes(button)) {
+                document.getElementById("input").innerText = document.getElementById("display").innerText;
+                document.getElementById("display").innerText = 0;
+            }
+            else if(mathArray.includes(button)) {
+                document.getElementById("input").innerText += document.getElementById("display").innerText;
+                document.getElementById("display").innerText = 0;
+            }
+        }
+
+        function calculate(str) {
+            let mathRegex = /[\/\*\-\+]/g;
+            // let numRegex = /\d+\.?\d*/g;
+
+            // console.log(str.match(mathRegex));
+            // console.log(str.match(numRegex));
+            // console.log(str.split(mathRegex));
+
+            let mathArr = str.match(mathRegex);
+            let numArr = str.split(mathRegex);
+
+            console.log(mathArr);
+            console.log(numArr);
+
+            let sumArr = [];
+
+            for(let i = 0; i < mathArr.length; i++) {
+                if(numArr[i+1] == "") {
+                    let num1 = 0;
+                    if(i == 0) {
+                        num1 = parseFloat(numArr[i]);
+                    }
+                    else {
+                        num1 = sumArr[i - 1];
+                    }
+                    
+                    if(mathArr[i+1] == "-" && numArr[i+2] != "") {
+                        mathArr[i+1] = mathArr[i];
+                        numArr[i+2] = "-" + numArr[i+2];
+
+                        console.log(mathArr);
+                        console.log(numArr);
+                    }
+                    sumArr.push(num1);
+                }
+                else if(i == 0) {
+                    let num1 = parseFloat(numArr[i]);
+                    let num2 = parseFloat(numArr[i + 1]);
+                    let result = 0;
+                    
+
+                    switch(mathArr[i]) {
+                        case "+":
+                            result = num1 + num2;
+                            break;
+                        case "-":
+                            result = num1 - num2;
+                            break;
+                        case "*":
+                            result = num1 * num2;
+                            break;
+                        case "/":
+                            result = num1 / num2;
+                            break;
+                    }
+                    sumArr.push(result);
+                }
+                else {
+                    let num1 = sumArr[i - 1];
+                    let num2 = parseFloat(numArr[i + 1]);
+                    let result = 0;
+
+                    // console.log(num1);
+                    // console.log(num2);
+
+                    switch(mathArr[i]) {
+                        case "+":
+                            result = num1 + num2;
+                            break;
+                        case "-":
+                            result = num1 - num2;
+                            break;
+                        case "*":
+                            result = num1 * num2;
+                            break;
+                        case "/":
+                            result = num1 / num2;
+                            break;
+                    }
+                    sumArr.push(result);
+                }
+            }
+            console.log(sumArr[sumArr.length - 1]);
+            document.getElementById("display").innerText = sumArr[sumArr.length - 1];
+        }
+
+        function buttonInput(value) {
+            write(value);
+        }
+
+        window.document.onkeydown = function(event) {
+            let input = event.key;
+            // console.log(input);
+
+            if(inputArray.includes(input)) {
+                // console.log(input);
+                buttonInput(input);
+            }
+        };
+    </script>
+  </head>
+
+  <body>
+    <div id="drum-machine" class="container-fluid">
+        <div class="row">
+            <div class="col text-center">
+                <h1>Calculator</h1>
+            </div>
+        </div>
+        <div id="buttons" class="row">
+            <div class="col-6 offset-2 bg-dark text-white">
+                <div id="input">0</div>
+                <div id="display">0</div>
+                <div class="container-fluid">    
+                    <div class="row">
+                        <button id="clear" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="buttonInput('Clear')">
+                            AC
+                        </button>
+                        <button id="Wbut" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="">
+                            ?
+                        </button>
+                        <button id="Ebut" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="">
+                            ?
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="seven" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="buttonInput('7')">
+                            7
+                        </button>
+                        <button id="eight" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="buttonInput('8')">
+                            8
+                        </button>
+                        <button id="nine" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="buttonInput('9')">
+                            9
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="four" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="buttonInput('4')">
+                            4
+                        </button>
+                        <button id="five" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="buttonInput('5')">
+                            5
+                        </button>
+                        <button id="six" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="buttonInput('6')">
+                            6
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="one" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="buttonInput('1')">
+                            1
+                        </button>
+                        <button id="two" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="buttonInput('2')">
+                            2
+                        </button>
+                        <button id="three" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="buttonInput('3')">
+                            3
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="zero" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="buttonInput('0')">
+                            0
+                        </button>
+                        <button id="decimal" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="buttonInput('.')">
+                            .
+                        </button>
+                        <button id="Cbut" type="button" class="drum-pad col-3 offset-1 bg-light" onclick="">
+                            ?
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2 bg-secondary text-white">
+                Control Area
+                <div id="key">.</div>
+                <div class="container-fluid">    
+                    <div class="row">
+                        <button id="divide" type="button" class="drum-pad col-11 offset-1 bg-light" onclick="buttonInput('/')">
+                            /
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="multiply" type="button" class="drum-pad col-11 offset-1 bg-light" onclick="buttonInput('*')">
+                            *
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="subtract" type="button" class="drum-pad col-11 offset-1 bg-light" onclick="buttonInput('-')">
+                            -
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="add" type="button" class="drum-pad col-11 offset-1 bg-light" onclick="buttonInput('+')">
+                            +
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button id="equals" type="button" class="drum-pad col-11 offset-1 bg-light" onclick="buttonInput('=')">
+                            =
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script 
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" 
+        crossorigin="anonymous"></script>
+    <!-- FreeCodeCamp Test CDN Link  -->
+    <script 
+        src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+  </body>
+</html>
